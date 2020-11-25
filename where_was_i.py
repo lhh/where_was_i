@@ -118,7 +118,7 @@ def parse_location(location):
 
     lat = float(location['latitudeE7']) / 10000000
     lon = float(location['longitudeE7']) / 10000000
-    return f'No zip code: {lat},{lon}\nUSA'
+    return f'Zip code/Address missing: {lat},{lon}\nUSA'
 
 
 def parse_locations(blob):
