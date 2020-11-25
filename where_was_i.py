@@ -96,18 +96,38 @@ def duration_to_dates(dur):
     return ret
 
 
+def parse_location(location):
+    # If there's no street address or zip code (ex: in BLM land,
+    # National Parks, private areas, etc.), just give the lat/lon
+    # coordinates. (USA only)
+    while 'address' in location:
+        lines = location['address'].split('\n')
+        if len(lines) < 2:
+            break
+        if lines[len(lines)-1] != 'USA':
+            return location['address']
+        line = lines[len(lines)-2]
+        words = line.split(' ')
+        try:
+            # zip code
+            int(words[len(words)-1])
+            return location['address']
+        except ValueError:
+            break
+        # NOTREACHED
+
+    lat = float(location['latitudeE7']) / 10000000
+    lon = float(location['longitudeE7']) / 10000000
+    return f'No zip code: {lat},{lon}\nUSA'
+
+
 def parse_locations(blob):
     locations = {}
     for loc in blob:
         key = loc['location']['placeId']
         if key not in locations:
             locations[key] = {}
-            try:
-                locations[key]['address'] = loc['location']['address']
-            except KeyError:
-                lat = float(loc['location']['latitudeE7'] / 10000000)
-                lon = float(loc['location']['longitudeE7'] / 10000000)
-                locations[key]['address'] = f'No address: {lat},{lon}\nUSA'
+            locations[key]['address'] = parse_location(loc['location'])
             locations[key]['dates'] = duration_to_dates(loc['duration'])
         else:
             lcat(locations[key]['dates'], duration_to_dates(loc['duration']))
