@@ -102,7 +102,12 @@ def parse_locations(blob):
         key = loc['location']['placeId']
         if key not in locations:
             locations[key] = {}
-            locations[key]['address'] = loc['location']['address']
+            try:
+                locations[key]['address'] = loc['location']['address']
+            except KeyError:
+                lat = float(loc['location']['latitudeE7'] / 10000000)
+                lon = float(loc['location']['longitudeE7'] / 10000000)
+                locations[key]['address'] = f'No address: {lat},{lon}\nUSA'
             locations[key]['dates'] = duration_to_dates(loc['duration'])
         else:
             lcat(locations[key]['dates'], duration_to_dates(loc['duration']))
