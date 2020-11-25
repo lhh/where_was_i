@@ -141,6 +141,7 @@ def main(argv):
         locations = load_visits(filename)
         parsed_locs = parse_locations(locations)
         cal = locations_by_date(parsed_locs)
+        box(f'Location data by date from {filename}')
         print_locations_by_date(cal)
 
     return 0
