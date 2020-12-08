@@ -22,18 +22,18 @@ from collections import OrderedDict
 
 
 def box(whatever):
-    print('+-' + '-'*len(whatever) + '-+')
+    print('+-' + '-' * len(whatever) + '-+')
     print(f'| {whatever} |')
-    print('+-' + '-'*len(whatever) + '-+')
+    print('+-' + '-' * len(whatever) + '-+')
 
 
 def usa_town_zip(addr):
     lines = addr.split('\n')
     if len(lines) < 2:
         return None
-    if lines[len(lines)-1] != 'USA':
+    if lines[len(lines) - 1] != 'USA':
         return None
-    return lines[len(lines)-2]
+    return lines[len(lines) - 2]
 
 
 def print_locations_by_date(lbd):
@@ -77,8 +77,8 @@ def locations_by_date(locations):
 
 
 def duration_to_dates(dur):
-    start = datetime.datetime.fromtimestamp(int(dur['startTimestampMs'])/1000)
-    end = datetime.datetime.fromtimestamp(int(dur['endTimestampMs'])/1000)
+    start = datetime.datetime.fromtimestamp(int(dur['startTimestampMs']) / 1000)
+    end = datetime.datetime.fromtimestamp(int(dur['endTimestampMs']) / 1000)
 
     ret = []
     delta = end - start
@@ -104,20 +104,25 @@ def parse_location(location):
         lines = location['address'].split('\n')
         if len(lines) < 2:
             break
-        if lines[len(lines)-1] != 'USA':
+        if lines[len(lines) - 1] != 'USA':
             return location['address']
-        line = lines[len(lines)-2]
+        line = lines[len(lines) - 2]
         words = line.split(' ')
         try:
             # zip code
-            int(words[len(words)-1])
+            int(words[len(words) - 1])
             return location['address']
         except ValueError:
             break
         # NOTREACHED
 
-    lat = float(location['latitudeE7']) / 10000000
-    lon = float(location['longitudeE7']) / 10000000
+    try:
+        lat = float(location['latitudeE7']) / 10000000
+        lon = float(location['longitudeE7']) / 10000000
+    except KeyError:
+        info = location['placeId']
+        return f'No location for: {info}\nUSA'
+
     return f'Zip code/Address missing: {lat},{lon}\nUSA'
 
 
