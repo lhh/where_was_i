@@ -1,0 +1,9 @@
+* Read in all files from the command line and combine information on
+  placeIds prior to displaying information.
+  * Some data I've run through this have a placeId which matches
+    a known placeId, but the coordinates and/or address are both missing
+* Allow run-time annotations which can then be stored in this git
+  repository.
+  * When we have a place ID with no address or just coordinates,
+    allow the user time to check maps to input a zip code.
+
