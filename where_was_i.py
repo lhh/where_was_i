@@ -104,7 +104,7 @@ def parse_location(location):
         lines = location['address'].split('\n')
         if len(lines) < 2:
             break
-        if lines[len(lines) - 1] != 'USA':
+        if lines[len(lines) - 1] not in ('USA', 'United States', 'United States of America'):
             return location['address']
         line = lines[len(lines) - 2]
         words = line.split(' ')
@@ -121,8 +121,11 @@ def parse_location(location):
         lon = float(location['longitudeE7']) / 10000000
     except KeyError:
         info = location['placeId']
-        return f'No location for: {info}\nUSA'
+        return f'No location information for: {info}\nUSA'
 
+    if 'name' in location:
+        name = location['name']
+        return f'Zip code/Address missing: {name} @ {lat},{lon}\nUSA'
     return f'Zip code/Address missing: {lat},{lon}\nUSA'
 
 
