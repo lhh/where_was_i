@@ -42,7 +42,7 @@ def print_locations_by_date(lbd):
         been_here = []
         box(date)
         for item in lbd[date]:
-            us_location = usa_town_zip(item['address'])
+            us_location = printable_location(item)
             if us_location and us_location not in been_here:
                 been_here.append(us_location)
                 print(us_location)
@@ -50,9 +50,12 @@ def print_locations_by_date(lbd):
 
 
 def lcat(left, right):
+    ret = False
     for item in right:
         if item not in left:
             left.append(item)
+            ret = True
+    return ret
 
 
 # Return an inversed list of all locations by date
@@ -96,49 +99,69 @@ def duration_to_dates(dur):
     return ret
 
 
-def parse_location(location):
+def printable_location(location):
+    loc = location['location']
     # If there's no street address or zip code (ex: in BLM land,
     # National Parks, private areas, etc.), just give the lat/lon
     # coordinates. (USA only)
-    while 'address' in location:
-        lines = location['address'].split('\n')
+
+    while 'address' in loc:
+        lines = loc['address'].split('\n')
         if len(lines) < 2:
             break
         if lines[len(lines) - 1] not in ('USA', 'United States', 'United States of America'):
-            return location['address']
+            return loc['address']
         line = lines[len(lines) - 2]
         words = line.split(' ')
         try:
             # zip code
             int(words[len(words) - 1])
-            return location['address']
+            return lines[len(lines) - 2]
         except ValueError:
             break
         # NOTREACHED
 
     try:
-        lat = float(location['latitudeE7']) / 10000000
-        lon = float(location['longitudeE7']) / 10000000
+        lat = float(loc['latitudeE7']) / 10000000
+        lon = float(loc['longitudeE7']) / 10000000
     except KeyError:
         info = location['placeId']
-        return f'No location information for: {info}\nUSA'
+        return f'No location information for: {info}'
 
-    if 'name' in location:
-        name = location['name']
-        return f'Zip code/Address missing: {name} @ {lat},{lon}\nUSA'
-    return f'Zip code/Address missing: {lat},{lon}\nUSA'
+    if 'name' in loc:
+        name = loc['name']
+        return f'Zip code/Address missing: {name} @ {lat},{lon}'
+    return f'Zip code/Address missing: {lat},{lon}'
+
+
+# Sometimes, entries do not have location data (coordinates or address),
+# but they still have the unique place ID.  Merge a location into our set
+# of locations, adding missing entries for address/latitude/longitude/name
+# as needed.
+#
+# locations = {'placeId': 'address', 'latitudeE7', 'longitudeE7', 'name' }
+def update_locations(locations, location):
+    loc = location['location']
+    pid = loc['placeId']
+
+    if pid not in locations:
+        locations[pid] = {'placeId': pid, 'location': {}, 'dates': []}
+
+    ret = False
+    for k in ('address', 'name', 'latitudeE7', 'longitudeE7'):
+        if k not in locations[pid]['location'] and k in loc:
+            locations[pid]['location'][k] = loc[k]
+            ret = True
+
+    if lcat(locations[pid]['dates'], duration_to_dates(location['duration'])):
+        ret = True
+    return ret
 
 
 def parse_locations(blob):
     locations = {}
     for loc in blob:
-        key = loc['location']['placeId']
-        if key not in locations:
-            locations[key] = {}
-            locations[key]['address'] = parse_location(loc['location'])
-            locations[key]['dates'] = duration_to_dates(loc['duration'])
-        else:
-            lcat(locations[key]['dates'], duration_to_dates(loc['duration']))
+        update_locations(locations, loc)
     return locations
 
 
@@ -167,15 +190,17 @@ def main(argv):
         return 1
 
     argv.pop(0)
+    all_locations = {}
     while True:
         if len(argv) <= 0:
             break
         filename = argv.pop(0)
         locations = load_visits(filename)
-        parsed_locs = parse_locations(locations)
-        cal = locations_by_date(parsed_locs)
-        box(f'Location data by date from {filename}')
-        print_locations_by_date(cal)
+        for k in locations:
+            update_locations(all_locations, k)
+
+    cal = locations_by_date(all_locations)
+    print_locations_by_date(cal)
 
     return 0
 
