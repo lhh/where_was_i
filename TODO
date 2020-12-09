@@ -1,5 +1,2 @@
-* Allow run-time annotations which can then be stored in this git
-  repository.
-  * When we have a place ID with no address or just coordinates,
-    allow the user time to check maps to input a zip code.
-
+* Cleanups
+* Simpler additions to known location
