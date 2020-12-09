@@ -18,6 +18,7 @@
 import datetime
 import json
 import sys
+import re
 from collections import OrderedDict
 
 
@@ -25,6 +26,43 @@ def box(whatever):
     print('+-' + '-' * len(whatever) + '-+')
     print(f'| {whatever} |')
     print('+-' + '-' * len(whatever) + '-+')
+
+
+def normalize_usa_addr(addr):
+    naddr = addr.replace(', ', '\n')
+    lines = naddr.split('\n')
+
+    if len(lines) < 2:
+        return addr
+
+    country = lines.pop()
+    if country not in ('USA', 'United States of America', 'United States'):
+        return addr
+
+    zipcode = lines.pop()
+    # 5 or 5+4
+    if not re.search(r'[0-9][0-9][0-9][0-9][0-9](\-[0-9][0-9][0-9][0-9])?$', zipcode):
+        return addr
+
+    # handle unincorporated areas: "Merrimack County, NH 11111, USA"
+    county = None
+    while len(lines) > 0:
+        city = lines.pop()
+        if 'County' in city:
+            county = city
+            city = None
+            continue
+        break
+
+    if county and city:
+        city = f'{city}, {county}'
+    elif not city:
+        city = county
+
+    if len(lines):
+        header = '\n'.join(lines)
+        return f'{header}\n{city}, {zipcode}\nUSA'
+    return f'{city}, {zipcode}\nUSA'
 
 
 def usa_town_zip(addr):
@@ -106,19 +144,13 @@ def printable_location(location):
     # coordinates. (USA only)
 
     while 'address' in loc:
-        lines = loc['address'].split('\n')
+        naddr = normalize_usa_addr(loc['address'])
+        lines = naddr.split('\n')
         if len(lines) < 2:
             break
         if lines[len(lines) - 1] not in ('USA', 'United States', 'United States of America'):
             return loc['address']
-        line = lines[len(lines) - 2]
-        words = line.split(' ')
-        try:
-            # zip code
-            int(words[len(words) - 1])
-            return lines[len(lines) - 2]
-        except ValueError:
-            break
+        return lines[len(lines) - 2]
         # NOTREACHED
 
     try:
