@@ -46,6 +46,7 @@ def normalize_usa_addr(addr):
 
     # handle unincorporated areas: "Merrimack County, NH 11111, USA"
     county = None
+    city = None
     while len(lines) > 0:
         city = lines.pop()
         if 'County' in city:
