@@ -15,10 +15,11 @@
 # limitations under the License.
 #
 
+import argparse
 import datetime
 import json
-import sys
 import re
+import sys
 from collections import OrderedDict
 
 
@@ -75,17 +76,23 @@ def usa_town_zip(addr):
     return lines[len(lines) - 2]
 
 
-def print_locations_by_date(lbd):
-    # Don't print the same zip code twice; it's pointless
+def print_locations_by_date(lbd, location_pattern=None):
+    # Don't print the same zip code twice for the same day; it's pointless
     for date in lbd:
         been_here = []
-        box(date)
+        date_shown = False
         for item in lbd[date]:
             us_location = printable_location(item)
+            if location_pattern and not re.search(location_pattern, us_location):
+                continue
+            if not date_shown:
+                box(date)
+                date_shown = True
             if us_location and us_location not in been_here:
                 been_here.append(us_location)
                 print(us_location)
-        print()
+        if date_shown:
+            print()
 
 
 def lcat(left, right):
@@ -217,23 +224,23 @@ def load_visits(filename):
     return ret
 
 
-def main(argv):
-    if len(argv) < 2:
-        print(f"usage: {argv[0]} file1..fileN")
-        return 1
+def parse_options():
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--pattern', '-p', help='Display locations matching this regular expression')
+    parser.add_argument('file', help='File(s) to analyze', nargs='+')
+    return parser.parse_args()
 
-    argv.pop(0)
+
+def main(argv):
+    args = parse_options()
     all_locations = {}
-    while True:
-        if len(argv) <= 0:
-            break
-        filename = argv.pop(0)
+    for filename in args.file:
         locations = load_visits(filename)
         for k in locations:
             update_locations(all_locations, k)
 
     cal = locations_by_date(all_locations)
-    print_locations_by_date(cal)
+    print_locations_by_date(cal, args.pattern)
 
     return 0
 
