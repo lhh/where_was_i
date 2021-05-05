@@ -7,5 +7,5 @@ Older versions parsed the files individually.  Google semantic data, however, te
 Even so, there are some times when Google location data do not have any address whatsoever for a location, so we can add those to known_locations.py to make the output readable.
 
 Notes:
- - there are issues with non-US addresses.
+ - there may be issues with non-US addresses.
  - Although Google location data is organized by year, location visits sometimes cross over from one to the next. This is expected.

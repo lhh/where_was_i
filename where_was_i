@@ -76,23 +76,32 @@ def usa_town_zip(addr):
     return lines[len(lines) - 2]
 
 
-def print_locations_by_date(lbd, location_pattern=None):
+def print_locations_by_date(lbd, location_pattern=None, full_address=False, simple=False, count=False):
+    total = 0
     # Don't print the same zip code twice for the same day; it's pointless
     for date in lbd:
         been_here = []
         date_shown = False
         for item in lbd[date]:
-            us_location = printable_location(item)
+            us_location = printable_location(item, full_address)
             if location_pattern and not re.search(location_pattern, us_location):
                 continue
             if not date_shown:
-                box(date)
-                date_shown = True
+                if not simple:
+                    box(date)
+                    date_shown = True
             if us_location and us_location not in been_here:
                 been_here.append(us_location)
-                print(us_location)
+                if not simple:
+                    print(us_location)
+                else:
+                    print(date, us_location)
+                total = total + 1
         if date_shown:
             print()
+
+    if count:
+        print(total, 'records')
 
 
 def lcat(left, right):
@@ -145,7 +154,7 @@ def duration_to_dates(dur):
     return ret
 
 
-def printable_location(location):
+def printable_location(location, full_address=False):
     loc = location['location']
     # If there's no street address or zip code (ex: in BLM land,
     # National Parks, private areas, etc.), just give the lat/lon
@@ -157,8 +166,10 @@ def printable_location(location):
         if len(lines) < 2:
             break
         if lines[len(lines) - 1] not in ('USA', 'United States', 'United States of America'):
-            return loc['address']
-        return lines[len(lines) - 2]
+            return loc['address'].replace('\n', ', ')
+        if not full_address:
+            return lines[len(lines) - 2].replace('\n', ', ')
+        return ', '.join(lines).replace('\n', ', ')
         # NOTREACHED
 
     try:
@@ -227,6 +238,9 @@ def load_visits(filename):
 def parse_options():
     parser = argparse.ArgumentParser()
     parser.add_argument('--pattern', '-p', help='Display locations matching this regular expression')
+    parser.add_argument('--address', '-a', action='store_true', default=False, help='Include address instead of just city/state/zip')
+    parser.add_argument('--simple', '-s', action='store_true', default=False, help='Show output in simple format (date - location)')
+    parser.add_argument('--count', '-c', action='store_true', default=False, help='Show final summary/count')
     parser.add_argument('file', help='File(s) to analyze', nargs='+')
     return parser.parse_args()
 
@@ -240,7 +254,7 @@ def main(argv):
             update_locations(all_locations, k)
 
     cal = locations_by_date(all_locations)
-    print_locations_by_date(cal, args.pattern)
+    print_locations_by_date(cal, args.pattern, args.address, args.simple, args.count)
 
     return 0
 
