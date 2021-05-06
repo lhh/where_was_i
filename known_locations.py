@@ -19,7 +19,16 @@
 # These should only be added when repeated Google data sets reference
 # the location but fail to add an address.
 __known_locations = {
-    'ChIJPZco_5Jq4okRukKhp4-9oI8': 'Concord, NH 03301\nUSA'
+    'ChIJzWWtpGPe5okR4ubPXaO0SlQ': '2231 Northampton St.\nHolyoke, MA 01040\nUSA',
+    'ChIJvXrDpLShs0wR0PlQXgmfw6w': '40 Old West Side Rd.\nConway, NH 03860\nUSA',
+    'ChIJcRfJJW6344kRl1_GjFm3YRg': '127 Shore Dr\nNashua\nNH 03062\nUSA',
+    'ChIJXf_56Tu344kR8RWBfWXgCfc': '36 Riverside St\nNashua, NH 03062\nUSA',
+    'ChIJr9MG1eu244kRaAi9cB2FR6o': '352 Amherst St\nNashua, NH 03063\nUSA',
+    'ChIJE8K9pHtZ34cRigKix9wvo1g': '610 Wesley Dr.\nWood River, IL 62095\nUSA',
+    'ChIJ3VMlLwWUEkcRiEOim7E_5ks': 'Purkyňova\n612 00 Brno-Královo Pole\nCzechia',
+    'ChIJPZco_5Jq4okRukKhp4-9oI8': 'Concord, NH 03301\nUSA',
+    'ChIJ3SCHxeRP4okR4lJZ6I1-8Ho': '58-76 Depot Rd\nAuburn, NH 03032\nUSA',  # FOMBA
+    'ChIJLwKZAoG344kRkLOsrnSDmYE': 'Nashua, NH 03062\nUSA'  # Horrigan Pk. Conservation Land
 }
 
 

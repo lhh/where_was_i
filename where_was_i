@@ -22,6 +22,8 @@ import re
 import sys
 from collections import OrderedDict
 
+import known_locations
+
 
 def box(whatever):
     print('+-' + '-' * len(whatever) + '-+')
@@ -179,10 +181,11 @@ def printable_location(location, full_address=False):
         info = location['placeId']
         return f'No location information for: {info}'
 
+    place = location['placeId']
     if 'name' in loc:
         name = loc['name']
-        return f'Zip code/Address missing: {name} @ {lat},{lon}'
-    return f'Zip code/Address missing: {lat},{lon}'
+        return f'Zip code/Address missing: {name} @ {lat},{lon} - {place}'
+    return f'Zip code/Address missing: {lat},{lon} - {place}'
 
 
 # Sometimes, entries do not have location data (coordinates or address),
@@ -247,7 +250,7 @@ def parse_options():
 
 def main(argv):
     args = parse_options()
-    all_locations = {}
+    all_locations = known_locations.locations()
     for filename in args.file:
         locations = load_visits(filename)
         for k in locations:
