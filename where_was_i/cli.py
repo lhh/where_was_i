@@ -22,7 +22,7 @@ import re
 import sys
 from collections import OrderedDict
 
-import known_locations
+from where_was_i import known_locations
 
 
 def box(whatever):
@@ -254,7 +254,7 @@ def parse_options():
     return parser.parse_args()
 
 
-def main(argv):
+def main():
     args = parse_options()
     all_locations = known_locations.locations()
     for filename in args.file:
@@ -269,4 +269,4 @@ def main(argv):
 
 
 if __name__ == "__main__":
-    sys.exit(main(sys.argv))
+    sys.exit(main())
