@@ -1,0 +1,4 @@
+#!/bin/bash
+
+LABEL=@LABEL@
+podman run --rm -i $LABEL $*

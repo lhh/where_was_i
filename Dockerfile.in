@@ -1,0 +1,17 @@
+FROM registry.access.redhat.com/ubi8/ubi:latest
+LABEL name="lhh/where-was-i"
+LABEL version="@VERSION@"
+
+COPY dist/*tar.gz /tmp
+
+RUN dnf -y install python3-pip && \
+    rpm -ql python3-pip && \
+    cd /tmp && \
+    tar -xzvf *.tar.gz && \
+    rm -f *.tar.gz && \
+    cd where_was_i* && \
+    pip3.6 install .
+
+ENV LANG en_US.UTF-8
+
+ENTRYPOINT ["/usr/local/bin/where-was-i"]
