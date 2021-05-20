@@ -231,9 +231,12 @@ def load_json(filename):
     return ret
 
 
+def decode_json(buffer):
+    return json.loads(buffer)
+
+
 # discard the outer shell and activitySegments, because irrelevant
-def load_visits(filename):
-    jdata = load_json(filename)
+def load_visits(jdata):
     ret = []
     for item in jdata['timelineObjects']:
         key = list(item.keys())[0]
@@ -250,15 +253,23 @@ def parse_options():
     parser.add_argument('--simple', '-s', action='store_true', default=False, help='Show output in simple format (date - location)')
     parser.add_argument('--count', '-c', action='store_true', default=False, help='Show final summary/count')
     parser.add_argument('--csv', action='store_true', default=False, help='Output in CSV format')
-    parser.add_argument('file', help='File(s) to analyze', nargs='+')
+    parser.add_argument('file', help='File(s) to analyze', nargs='*')
     return parser.parse_args()
 
 
 def main():
     args = parse_options()
     all_locations = known_locations.locations()
-    for filename in args.file:
-        locations = load_visits(filename)
+    if args.file:
+        for filename in args.file:
+            jdata = load_json(filename)
+            locations = load_visits(jdata)
+            for k in locations:
+                update_locations(all_locations, k)
+    else:
+        data = sys.stdin.read()
+        jdata = decode_json(data)
+        locations = load_visits(jdata)
         for k in locations:
             update_locations(all_locations, k)
 
