@@ -28,17 +28,29 @@ setuptools.setup(
 
         Getting Started:
         ----------------
-        To use the Trello CLI, install the package either by downloading the source and running
+        To use where-was-i, install it in one of several ways.
 
-          $ python setup.py install
+          $ git clone https://github.com/lhh/where_was_i
+          $ cd where_was_i
+          $ pip install .
+          $ where-was-i <args> *
 
-        or by using pip
+        or by using pip:
 
           $ pip install where_was_i
+          $ where-was-i <args>
+
+        or by using the container build (does not support wildcards):
+
+          $ git clone https://github.com/lhh/where_was_i
+          $ cd where_was_i
+          $ make
+          $ ./where-was-i <args> < <filename>
 
         Examples:
          - where-was-i ~/2017/*
          - where-was-i -s -p ~/2017/2017_JANUARY.json
+         - where-was-i < ~/2017/2017_JANUARY.json
         """),
     author='Lon Hohberger',
     author_email='lon@metamorphism.com',
