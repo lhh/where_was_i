@@ -95,11 +95,11 @@ def print_locations_by_date(lbd, location_pattern=None, full_address=False, simp
             if us_location and us_location not in been_here:
                 been_here.append(us_location)
                 if simple and not csv:
-                    print(us_location)
+                    print(date, us_location)
                 elif csv:
                     print(f'{date},\"{us_location}\"')
                 else:
-                    print(date, us_location)
+                    print(us_location)
                 total = total + 1
         if date_shown:
             print()
