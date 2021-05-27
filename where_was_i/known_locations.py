@@ -23,7 +23,7 @@ __known_locations = {
     'ChIJvXrDpLShs0wR0PlQXgmfw6w': '40 Old West Side Rd.\nConway, NH 03860\nUSA',
     'ChIJcRfJJW6344kRl1_GjFm3YRg': '127 Shore Dr\nNashua\nNH 03062\nUSA',
     'ChIJXf_56Tu344kR8RWBfWXgCfc': '36 Riverside St\nNashua, NH 03062\nUSA',  # School itself
-    'ChIJd0qIXTy344kRAAAAAAAAAAA': '36 Riverside St\nNashua, NH 03062\nUSA',  # Mine Falls Park entrance'
+    'ChIJd0qIXTy344kRAAAAAAAAAAA': '36 Riverside St\nNashua, NH 03062\nUSA',  # Mine Falls Park entrance
     'ChIJr9MG1eu244kRaAi9cB2FR6o': '352 Amherst St\nNashua, NH 03063\nUSA',
     'ChIJE8K9pHtZ34cRigKix9wvo1g': '610 Wesley Dr.\nWood River, IL 62095\nUSA',
     'ChIJ3VMlLwWUEkcRiEOim7E_5ks': 'Purkyňova\n612 00 Brno-Královo Pole\nCzechia',
