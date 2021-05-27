@@ -28,15 +28,13 @@ Examples:
         2020-11-08 Merrimack, NH 03054
         ...
 
- - where-was-i -a 2020/\*
+ - where-was-i --address -p 'Northfield' 2020/\*
 
         ...
         +------------+
         | 2020-11-08 |
         +------------+
-        Nashua, NH 03062
-        Northfield, NH 03276
-        Merrimack, NH 03054
+        75 Ski Hill Dr, Northfield, NH 03276, USA
         ...
 
  - where-was-i -s -p 'Northfield' 2020/\*
@@ -52,12 +50,12 @@ Examples:
         2020-11-08 Northfield, NH 03276
         6 records
 
- - where-was-i --csv -p 'Northfield' 2020.\*
+ - where-was-i --csv -a -p 'Northfield' 2020.\*
 
         Date,Location
         ...
-        2020-11-06,"Northfield, NH 03276"
-        2020-11-08,"Northfield, NH 03276"
+        2020-11-06,"75 Ski Hill Dr, Northfield, NH 03276, USA"
+        2020-11-08,"75 Ski Hill Dr, Northfield, NH 03276, USA"
 
 Notes:
  - there may be issues with non-US addresses.
