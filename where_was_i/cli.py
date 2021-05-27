@@ -81,6 +81,10 @@ def usa_town_zip(addr):
 def print_locations_by_date(lbd, location_pattern=None, full_address=False, simple=False, count=False, csv=False):
     total = 0
     # Don't print the same zip code twice for the same day; it's pointless
+
+    if csv and not simple:
+        print('Date,Location')
+
     for date in lbd:
         been_here = []
         date_shown = False
@@ -89,7 +93,7 @@ def print_locations_by_date(lbd, location_pattern=None, full_address=False, simp
             if location_pattern and not re.search(location_pattern, us_location):
                 continue
             if not date_shown:
-                if not simple:
+                if not simple and not csv:
                     box(date)
                     date_shown = True
             if us_location and us_location not in been_here:
