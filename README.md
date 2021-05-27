@@ -6,7 +6,7 @@ Older versions parsed the files individually.  Google semantic data, however, te
 
 Even so, there are some times when Google location data do not have any address whatsoever for a location, so we can add those to known_locations.py to make the output readable.
 
-There is a preliminary container build setup using Makefiles if one does not desire to use 'pip' to install things; it utilizes Red Hat's Universal Base Image, but could work with minimal changes on other base container images.
+There is a preliminary container build setup using Makefiles if one does not desire to use 'pip' to install things; it utilizes Red Hat's Universal Base Image, but could work with minimal changes on other base container images. Note that the container build only works with one file at a time.
 
 Examples:
  - where-was-i 2020/\*
