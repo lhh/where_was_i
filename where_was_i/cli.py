@@ -146,8 +146,38 @@ def locations_by_date(locations):
 
 
 def duration_to_dates(dur):
-    start = datetime.datetime.fromtimestamp(int(dur['startTimestampMs']) / 1000)
-    end = datetime.datetime.fromtimestamp(int(dur['endTimestampMs']) / 1000)
+    start = None
+    end = None
+
+    # Pre-2022, JSON format included milliseconds
+    try:
+        start = datetime.datetime.fromtimestamp(int(dur['startTimestampMs']) / 1000)
+    except KeyError:
+        pass
+    try:
+        end = datetime.datetime.fromtimestamp(int(dur['endTimestampMs']) / 1000)
+    except KeyError:
+        pass
+
+    # FIXME: These need TZ offsets; they're in UTC. Accurate enough for discerning
+    # where one was on the East Coast in the USA, but would create an issue for
+    # farther west locations.  Consider using tzwhere.
+    if not start:
+        try:
+            # 2021-04-03T17:39:54.123Z
+            start = datetime.datetime.strptime(dur['startTimestamp'], '%Y-%m-%dT%H:%M:%S.%fZ')
+        except ValueError:
+            pass
+        if not start:
+            # 2021-04-03T17:39:54Z
+            start = datetime.datetime.strptime(dur['startTimestamp'], '%Y-%m-%dT%H:%M:%SZ')
+    if not end:
+        try:
+            end = datetime.datetime.strptime(dur['endTimestamp'], '%Y-%m-%dT%H:%M:%S.%fZ')
+        except ValueError:
+            pass
+        if not end:
+            end = datetime.datetime.strptime(dur['endTimestamp'], '%Y-%m-%dT%H:%M:%SZ')
 
     ret = []
     delta = end - start
